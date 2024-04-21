@@ -1,0 +1,43 @@
+name: Trigger auto deployment for automl-llama
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - 'src/**'
+    - '.github/workflows/automl-llama-AutoDeployTrigger-6442748f-3417-4c21-ac15-3ba4711e51a3.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AUTOMLLLAMA_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}/src 
+          registryUrl: ca0da0bdfe6dacr.azurecr.io
+          registryUsername: ${{ secrets.AUTOMLLLAMA_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.AUTOMLLLAMA_REGISTRY_PASSWORD }}
+          containerAppName: automl-llama
+          resourceGroup: sfautoml
+          imageToBuild: ca0da0bdfe6dacr.azurecr.io/automl-llama:${{ github.sha }}
+          
+            
+
+     
+
