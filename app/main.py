@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Body, Header, HTTPException
+from fastapi import FastAPI, Body, Header, HTTPException, Depends
 from langchain_openai import OpenAI
 from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
